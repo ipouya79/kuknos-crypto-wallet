@@ -39,8 +39,9 @@ const SendPage: React.FC = () => {
               Amount
             </label>
             <input
-              type="text"
+              type="number"
               id="amount"
+              required
               value={formData.amount}
               onChange={handleChange}
               placeholder="Enter amount"
@@ -59,6 +60,7 @@ const SendPage: React.FC = () => {
             <input
               type="text"
               id="destination"
+              required
               value={formData.destination}
               onChange={handleChange}
               placeholder="Enter wallet address"
