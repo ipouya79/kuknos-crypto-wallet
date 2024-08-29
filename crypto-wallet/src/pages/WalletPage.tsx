@@ -40,8 +40,9 @@ const WalletPage: React.FC = () => {
   };
 
   const handleLogout = () => {
-    localStorage.clear();
     navigate("/");
+    localStorage.clear();
+    window.location.reload();
   };
 
   const formatPersianDate = useCallback((date: string) => {
