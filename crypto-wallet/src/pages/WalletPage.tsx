@@ -6,7 +6,9 @@ import Pagination from "../components/Pagination";
 import moment from "jalali-moment";
 import "moment/locale/fa";
 
-const WalletPage: React.FC = () => {
+const WalletPage: React.FC<{
+  setIsWalletCreated: (value: boolean) => void;
+}> = ({ setIsWalletCreated }) => {
   const [balance, setBalance] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [transactionsPerPage] = useState<number>(5);
@@ -40,11 +42,10 @@ const WalletPage: React.FC = () => {
   };
 
   const handleLogout = () => {
-    navigate("/");
     localStorage.clear();
-    window.location.reload();
+    setIsWalletCreated(false); // notify AppRouter about logout
+    navigate("/");
   };
-
   const formatPersianDate = useCallback((date: string) => {
     return moment(date).locale("fa").format("YYYY/MM/DD HH:mm:ss");
   }, []);
@@ -133,7 +134,6 @@ const WalletPage: React.FC = () => {
             ))}
           </div>
         )}
-
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
