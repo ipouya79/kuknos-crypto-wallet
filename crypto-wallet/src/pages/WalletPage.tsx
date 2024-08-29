@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAxios } from "../hooks/useAxios";
 import { Transaction } from "../types/transaction";
 import Pagination from "../components/Pagination";
-import moment from "moment";
+import moment from "jalali-moment";
 import "moment/locale/fa";
 
 const WalletPage: React.FC = () => {
@@ -12,14 +12,19 @@ const WalletPage: React.FC = () => {
   const [transactionsPerPage] = useState<number>(5);
   const navigate = useNavigate();
 
+  const axiosConfig = useMemo(
+    () => ({
+      url: "../server/data.json",
+      method: "GET",
+    }),
+    []
+  );
+
   const {
     data: transactions,
     loading,
     error,
-  } = useAxios<Transaction[]>({
-    url: "../server/data.json",
-    method: "GET",
-  });
+  } = useAxios<Transaction[]>(axiosConfig);
 
   useEffect(() => {
     const storedBalance = localStorage.getItem("balance");
@@ -39,8 +44,9 @@ const WalletPage: React.FC = () => {
     navigate("/");
   };
 
-  const formatPersianDate = (date: string) =>
-    moment(date).locale("fa").format("YYYY/MM/DD HH:mm:ss");
+  const formatPersianDate = useCallback((date: string) => {
+    return moment(date).locale("fa").format("YYYY/MM/DD HH:mm:ss");
+  }, []);
 
   // pagination logic
   const indexOfLastTransaction = currentPage * transactionsPerPage;
@@ -116,8 +122,8 @@ const WalletPage: React.FC = () => {
                 <div className=" w-full flex items-center justify-between">
                   <p className="text-lg font-medium text-gray-800 dark:text-white">
                     {transaction.crypto_currency_symbol} {transaction.amount}
-                  </p> 
-               
+                  </p>
+
                   <p className="text-sm text-gray-500 dark:text-gray-300">
                     {formatPersianDate(transaction.transaction_date)}
                   </p>
