@@ -2,13 +2,21 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAxios } from "../hooks/useAxios";
 import { Transaction } from "../types/transaction";
-import moment from "jalali-moment";
+import Pagination from "../components/Pagination";
+import moment from "moment";
+import "moment/locale/fa";
 
 const WalletPage: React.FC = () => {
   const [balance, setBalance] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [transactionsPerPage] = useState<number>(5);
   const navigate = useNavigate();
 
-  const { data: transactions, loading, error } = useAxios<Transaction[]>({
+  const {
+    data: transactions,
+    loading,
+    error,
+  } = useAxios<Transaction[]>({
     url: "../server/data.json",
     method: "GET",
   });
@@ -34,14 +42,39 @@ const WalletPage: React.FC = () => {
   const formatPersianDate = (date: string) =>
     moment(date).locale("fa").format("YYYY/MM/DD HH:mm:ss");
 
+  // pagination logic
+  const indexOfLastTransaction = currentPage * transactionsPerPage;
+  const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
+  const currentTransactions =
+    transactions?.slice(indexOfFirstTransaction, indexOfLastTransaction) || [];
+  const totalPages = Math.ceil(
+    (transactions?.length || 0) / transactionsPerPage
+  );
+
   const buttonStyles =
     "flex-1 text-white font-semibold py-2 rounded-full transition duration-300";
 
   const buttons = [
-    { onClick: handleIncreaseBalance, text: "Increase Balance", bgClass: "bg-blue-500 hover:bg-blue-600 focus:ring-blue-500" },
-    { onClick: () => navigate("/send"), text: "Send", bgClass: "bg-green-500 hover:bg-green-600 focus:ring-green-500" },
-    { onClick: () => navigate("/receive"), text: "Receive", bgClass: "bg-yellow-500 hover:bg-yellow-600 focus:ring-yellow-500" },
-    { onClick: handleLogout, text: "Logout", bgClass: "bg-red-500 hover:bg-red-600 focus:ring-red-500" },
+    {
+      onClick: handleIncreaseBalance,
+      text: "Increase Balance",
+      bgClass: "bg-blue-500 hover:bg-blue-600 focus:ring-blue-500",
+    },
+    {
+      onClick: () => navigate("/send"),
+      text: "Send",
+      bgClass: "bg-green-500 hover:bg-green-600 focus:ring-green-500",
+    },
+    {
+      onClick: () => navigate("/receive"),
+      text: "Receive",
+      bgClass: "bg-yellow-500 hover:bg-yellow-600 focus:ring-yellow-500",
+    },
+    {
+      onClick: handleLogout,
+      text: "Logout",
+      bgClass: "bg-red-500 hover:bg-red-600 focus:ring-red-500",
+    },
   ];
 
   return (
@@ -68,20 +101,23 @@ const WalletPage: React.FC = () => {
         </h2>
 
         {loading ? (
-          <p className="text-center text-gray-700 dark:text-gray-300">Loading...</p>
+          <p className="text-center text-gray-700 dark:text-gray-300">
+            Loading...
+          </p>
         ) : error ? (
           <p className="text-center text-red-500">Error: {error}</p>
         ) : (
           <div className="space-y-4">
-            {transactions?.map((transaction, index) => (
+            {currentTransactions.map((transaction, index) => (
               <div
                 key={index}
                 className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg shadow-sm flex justify-between items-center"
               >
-                <div>
+                <div className=" w-full flex items-center justify-between">
                   <p className="text-lg font-medium text-gray-800 dark:text-white">
                     {transaction.crypto_currency_symbol} {transaction.amount}
-                  </p>
+                  </p> 
+               
                   <p className="text-sm text-gray-500 dark:text-gray-300">
                     {formatPersianDate(transaction.transaction_date)}
                   </p>
@@ -90,6 +126,12 @@ const WalletPage: React.FC = () => {
             ))}
           </div>
         )}
+
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );
