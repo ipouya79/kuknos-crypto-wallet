@@ -19,12 +19,12 @@ const ReceivePage: React.FC = () => {
                 className="rounded-lg"
               />
             </div>
-            <p className="mt-6  text-lg font-medium text-gray-800 dark:text-gray-200 break-words">
+            <p className="mt-6  text-sm font-bold text-gray-800 dark:text-gray-200 break-words">
               {walletAddress}
             </p>
           </div>
         ) : (
-          <p className="text-lg text-gray-600 dark:text-gray-300">
+          <p className="text-sm text-gray-600 dark:text-gray-300">
             No wallet address found
           </p>
         )}
