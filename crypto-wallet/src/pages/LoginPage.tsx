@@ -35,8 +35,8 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen ">
-      <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-lg">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 w-full max-w-lg">
         {mnemonic.length === 0 ? (
           <button
             onClick={handleCreateWallet}
@@ -46,14 +46,14 @@ const LoginPage: React.FC = () => {
           </button>
         ) : (
           <div>
-            <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-6">
+            <h2 className="text-3xl font-extrabold text-center text-gray-800 dark:text-gray-200 mb-6">
               Your Recovery Words
             </h2>
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-4 justify-items-center mb-6">
               {mnemonic.map((item, index) => (
                 <div
                   key={index}
-                  className="h-20 w-24 flex items-center justify-center text-lg font-semibold text-gray-900 border border-gray-300 rounded-lg shadow-md bg-gradient-to-r from-gray-100 to-gray-200"
+                  className="h-20 w-24 flex items-center justify-center text-lg font-semibold text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-lg shadow-md bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800"
                 >
                   {item}
                 </div>
